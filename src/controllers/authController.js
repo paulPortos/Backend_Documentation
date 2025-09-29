@@ -1,16 +1,4 @@
-const jwt = require('jsonwebtoken');
 const User = require('../models/UsersModel');
-
-/**
- * Generate JWT token
- * @param {string} userId - User ID
- * @returns {string} JWT token
- */
-const generateToken = (userId) => {
-  return jwt.sign({ userId }, process.env.JWT_SECRET, {
-    expiresIn: '7d'
-  });
-};
 
 /**
  * @desc    Register new user
@@ -39,15 +27,15 @@ const register = async (req, res) => {
       userType
     });
 
-    // Generate token
-    const token = generateToken(user._id);
+
+    // Optionally, auto-login the user after registration:
+    req.session.userId = user._id;
 
     res.status(201).json({
       success: true,
       message: 'User registered successfully',
       data: {
-        user,
-        token
+        user
       }
     });
 
@@ -96,8 +84,9 @@ const login = async (req, res) => {
       });
     }
 
-    // Generate token
-    const token = generateToken(user._id);
+
+    // Set session userId (log the user in)
+    req.session.userId = user._id;
 
     res.json({
       success: true,
@@ -108,10 +97,37 @@ const login = async (req, res) => {
           fullName: user.fullName,
           email: user.email,
           userType: user.userType
-        },
-        token
+        }
       }
     });
+/**
+ * @desc    Logout user
+ * @route   POST /api/auth/logout
+ * @access  Private
+ */
+const logout = async (req, res) => {
+  try {
+    if (req.session && req.session.userId) {
+      // Update last_activity for the user
+      const user = await User.findById(req.session.userId);
+      if (user) {
+        await user.updateLastActivity();
+      }
+      // Destroy the session
+      req.session.destroy((err) => {
+        if (err) {
+          return res.status(500).json({ success: false, message: 'Logout failed.' });
+        }
+        res.clearCookie('connect.sid'); // Default cookie name for express-session
+        res.json({ success: true, message: 'Logged out successfully.' });
+      });
+    } else {
+      res.status(200).json({ success: true, message: 'No active session.' });
+    }
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
 
   } catch (error) {
     res.status(500).json({
@@ -192,6 +208,7 @@ const updateProfile = async (req, res) => {
 module.exports = {
   register,
   login,
+  logout,
   getProfile,
   updateProfile
 };

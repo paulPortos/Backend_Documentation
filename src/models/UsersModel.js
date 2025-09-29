@@ -14,7 +14,7 @@ const userSchema = new mongoose.Schema({
     required: [true, 'Full name is required'],      // You MUST provide a name - it's mandatory
     trim: true,                                      // Removes extra spaces at beginning and end
     maxlength: [100, 'Full name cannot exceed 100 characters'] // Name can't be longer than 100 letters
-  },
+  }, 
   
   // The user's email address (used for login and contact)
   email: {
@@ -33,17 +33,23 @@ const userSchema = new mongoose.Schema({
   password: {
     type: String,                                    // This must be text
     required: [true, 'Password is required'],       // You MUST provide a password
-    minlength: [6, 'Password must be at least 6 characters long'] // Password must be at least 6 letters/numbers
+    minlength: [8, 'Password must be at least 8 characters long'] // Password must be at least 8 letters/numbers
   },
   
   // What type of user they are (determines what they can do in the app)
   userType: {
     type: String,                                    // This must be text
-    enum: ['admin', 'rentor'],                       // Can ONLY be one of these two values
+    enum: ['admin', 'staff', 'rentor'],                       // Can ONLY be one of these two values
     required: [true, 'User type is required'],      // You MUST specify a user type
     default: 'rentor'                                // If you don't specify, it defaults to 'rentor'
+  },
+
+  // The last time the user logged out (for tracking activity)
+  last_activity: {
+    type: Date,                                      // This will store the date and time
+    default: null                                    // Starts as null, updated on logout
   }
-}, {
+  }, {
   timestamps: true // This automatically adds 'createdAt' and 'updatedAt' dates to every user
 });
 
@@ -103,4 +109,16 @@ userSchema.methods.toJSON = function() {
  * This creates our actual User model and makes it available to other parts of our app.
  * Think of it like creating a factory that can make user accounts following our blueprint.
  */
+
+/**
+ * UPDATE LAST ACTIVITY METHOD
+ *
+ * This function can be called when the user logs out to record the time.
+ * Usage: await user.updateLastActivity();
+ */
+userSchema.methods.updateLastActivity = async function() {
+  this.last_activity = new Date();
+  await this.save();
+};
+
 module.exports = mongoose.model('User', userSchema);

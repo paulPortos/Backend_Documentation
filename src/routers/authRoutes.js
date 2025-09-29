@@ -6,7 +6,7 @@ const {
   getProfile,
   updateProfile
 } = require('../controllers/authController');
-const { authenticate } = require('../middleware/auth');
+const { authenticate } = require('../middleware/auth').default;
 
 /**
  * Authentication Routes
@@ -19,7 +19,7 @@ const { authenticate } = require('../middleware/auth');
  * @access  Public
  * @body    { fullName, email, password, userType }
  */
-router.post('/register', register);
+router.post('/register', register); //localhost:8000/api/auth/register
 
 /**
  * @route   POST /api/auth/login

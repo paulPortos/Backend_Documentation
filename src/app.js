@@ -59,14 +59,7 @@ app.get('/api', (req, res) => {
         profile: 'GET /api/auth/profile',
         updateProfile: 'PUT /api/auth/profile'
       },
-      notes: {
-        getAllNotes: 'GET /api/notes',
-        createNote: 'POST /api/notes',
-        getNote: 'GET /api/notes/:id',
-        updateNote: 'PUT /api/notes/:id',
-        deleteNote: 'DELETE /api/notes/:id',
-        getStats: 'GET /api/notes/stats'
-      }
+      
     }
   });
 });
