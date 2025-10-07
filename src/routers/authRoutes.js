@@ -3,8 +3,11 @@ const router = express.Router();
 const {
   register,
   login,
+  logout,
   getProfile,
-  updateProfile
+  updateProfile,
+  verifyEmail,
+  resendVerification
 } = require('../controllers/authController');
 const { authenticate } = require('../middleware/auth').default;
 
@@ -28,6 +31,30 @@ router.post('/register', register); //localhost:8000/api/auth/register
  * @body    { email, password }
  */
 router.post('/login', login);
+
+/**
+ * @route   POST /api/auth/logout
+ * @desc    Logout user (JWT-based)
+ * @access  Private
+ * @headers Authorization: Bearer <token>
+ */
+router.post('/logout', authenticate, logout);
+
+/**
+ * @route   GET /api/auth/verify-email
+ * @desc    Verify user email address
+ * @access  Public
+ * @query   token=<verification_token>
+ */
+router.get('/verify-email', verifyEmail);
+
+/**
+ * @route   POST /api/auth/resend-verification
+ * @desc    Resend verification email
+ * @access  Public
+ * @body    { email }
+ */
+router.post('/resend-verification', resendVerification);
 
 /**
  * @route   GET /api/auth/profile

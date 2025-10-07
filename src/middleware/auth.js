@@ -1,36 +1,79 @@
 
+import jwt from 'jsonwebtoken';
 import { findById } from '../models/UsersModel';
 
 /**
 
 /**
- * SESSION-BASED AUTHENTICATION MIDDLEWARE
+ * JWT-BASED AUTHENTICATION MIDDLEWARE
  *
- * This checks if the user is logged in by looking for a userId in the session (from cookies).
- * If the user is logged in, it loads their info and attaches it to req.user.
+ * This checks if the user is logged in by looking for a JWT token in the Authorization header.
+ * If the user is logged in and token is valid, it loads their info and attaches it to req.user.
  * If not, it blocks access and asks them to log in.
  */
 const authenticate = async (req, res, next) => {
-  // If there's no session or no userId in the session, block access
-  if (!req.session || !req.session.userId) {
-    return res.status(401).json({
-      success: false,
-      message: 'Access denied. Please log in first.'
-    });
-  }
+  try {
+    // Get token from Authorization header (format: "Bearer <token>")
+    const authHeader = req.header('Authorization');
+    
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return res.status(401).json({
+        success: false,
+        message: 'Access denied. No token provided or invalid format. Please log in first.'
+      });
+    }
 
-  // Find the user in the database
-  const user = await findById(req.session.userId);
-  if (!user) {
-    return res.status(401).json({
-      success: false,
-      message: 'User not found. Please log in again.'
-    });
-  }
+    // Extract the token (remove "Bearer " prefix)
+    const token = authHeader.substring(7);
 
-  // Attach user info to the request for later use
-  req.user = user;
-  next();
+    if (!token) {
+      return res.status(401).json({
+        success: false,
+        message: 'Access denied. No token provided. Please log in first.'
+      });
+    }
+
+    // Verify the JWT token
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    
+    // Find the user in the database
+    const user = await findById(decoded.userId);
+    if (!user) {
+      return res.status(401).json({
+        success: false,
+        message: 'User not found. Please log in again.'
+      });
+    }
+
+    // Check if user email is verified
+    if (!user.is_verified) {
+      return res.status(401).json({
+        success: false,
+        message: 'Email not verified. Please check your email and verify your account.'
+      });
+    }
+
+    // Attach user info to the request for later use
+    req.user = user;
+    next();
+  } catch (error) {
+    if (error.name === 'JsonWebTokenError') {
+      return res.status(401).json({
+        success: false,
+        message: 'Invalid token. Please log in again.'
+      });
+    } else if (error.name === 'TokenExpiredError') {
+      return res.status(401).json({
+        success: false,
+        message: 'Token expired. Please log in again.'
+      });
+    } else {
+      return res.status(500).json({
+        success: false,
+        message: 'Server error during authentication.'
+      });
+    }
+  }
 };
 
 /**

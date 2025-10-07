@@ -44,6 +44,12 @@ const userSchema = new mongoose.Schema({
     default: 'rentor'                                // If you don't specify, it defaults to 'rentor'
   },
 
+  // Whether the user has verified their email address
+  is_verified: {
+    type: Boolean,                                   // This must be true or false
+    default: false                                   // New users start as unverified
+  },
+
   // The last time the user logged out (for tracking activity)
   last_activity: {
     type: Date,                                      // This will store the date and time
