@@ -9,7 +9,7 @@ const {
   verifyEmail,
   resendVerification
 } = require('../controllers/authController');
-const { authenticate } = require('../middleware/auth').default;
+const { authenticate } = require('../middleware/auth');
 
 /**
  * Authentication Routes

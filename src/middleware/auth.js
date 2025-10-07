@@ -1,6 +1,6 @@
 
-import jwt from 'jsonwebtoken';
-import { findById } from '../models/UsersModel';
+const jwt = require('jsonwebtoken');
+const User = require('../models/UsersModel');
 
 /**
 
@@ -37,7 +37,7 @@ const authenticate = async (req, res, next) => {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     
     // Find the user in the database
-    const user = await findById(decoded.userId);
+    const user = await User.findById(decoded.userId);
     if (!user) {
       return res.status(401).json({
         success: false,
@@ -102,4 +102,4 @@ const authorize = (...userTypes) => {
 /**
  * EXPORT THE FUNCTIONS
  */
-export default { authenticate, authorize };
+module.exports = { authenticate, authorize };
