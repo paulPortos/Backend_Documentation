@@ -7,7 +7,7 @@ const { errorHandler, notFound } = require('./middleware/errorHandler');
 
 // Import routes
 const authRoutes = require('./routers/authRoutes');
-const notesRoutes = require('./routers/notesRoutes');
+// const notesRoutes = require('./routers/notesRoutes'); // Commented out until notes functionality is implemented
 
 // Load environment variables
 dotenv.config();
@@ -44,7 +44,7 @@ app.get('/health', (req, res) => {
 
 // API Routes
 app.use('/api/auth', authRoutes);
-app.use('/api/notes', notesRoutes);
+// app.use('/api/notes', notesRoutes); // Commented out until notes functionality is implemented
 
 // API Documentation endpoint
 app.get('/api', (req, res) => {
@@ -56,10 +56,13 @@ app.get('/api', (req, res) => {
       auth: {
         register: 'POST /api/auth/register',
         login: 'POST /api/auth/login',
+        logout: 'POST /api/auth/logout',
         profile: 'GET /api/auth/profile',
-        updateProfile: 'PUT /api/auth/profile'
-      },
-      
+        updateProfile: 'PUT /api/auth/profile',
+        verifyEmail: 'GET /api/auth/verify-email',
+        resendVerification: 'POST /api/auth/resend-verification'
+      }
+      // notes endpoints will be added when notes functionality is implemented
     }
   });
 });
