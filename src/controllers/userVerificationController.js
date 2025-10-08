@@ -7,11 +7,18 @@ const nodemailer = require('nodemailer');
  * Configure nodemailer transporter for sending emails
  */
 const createEmailTransporter = () => {
-  return nodemailer.createTransporter({
-    service: 'gmail', // You can change this to your email service
+  const { EMAIL_USER, EMAIL_PASS } = process.env;
+
+  if (!EMAIL_USER || !EMAIL_PASS) {
+    throw new Error('Email credentials are not configured. Please set EMAIL_USER and EMAIL_PASS in your environment.');
+  }
+
+  // Note: use createTransport (not createTransporter)
+  return nodemailer.createTransport({
+    service: 'gmail', // You can change this to your email service (e.g., Outlook, SendGrid)
     auth: {
-      user: process.env.EMAIL_USER, // Your email address
-      pass: process.env.EMAIL_PASS  // Your email password or app password
+      user: EMAIL_USER, // Your email address
+      pass: EMAIL_PASS  // Your email password or app password
     }
   });
 };
@@ -31,15 +38,15 @@ const sendVerificationEmail = async (user) => {
       { expiresIn: '24h' } // Verification link expires in 24 hours
     );
     
-    const verificationUrl = `${process.env.FRONTEND_URL || 'http://localhost:3000'}/verify-email?token=${verificationToken}`;
+  const verificationUrl = `${process.env.FRONTEND_URL || 'http://localhost:3000'}/verify-email?token=${encodeURIComponent(verificationToken)}`;
     
     const mailOptions = {
-      from: process.env.EMAIL_USER,
+  from: `Support <${process.env.EMAIL_USER}>`,
       to: user.email,
       subject: 'Email Verification - Please Verify Your Account',
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-          <h2 style="color: #333;">Welcome to Our Platform!</h2>
+          <h2 style="color: #333;">Welcome to RentEase!</h2>
           <p>Hi ${user.fullName},</p>
           <p>Thank you for registering with us. To complete your registration, please verify your email address by clicking the button below:</p>
           <div style="text-align: center; margin: 30px 0;">
