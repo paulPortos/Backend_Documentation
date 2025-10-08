@@ -2,75 +2,64 @@ const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
 
-// Import middleware
-const { errorHandler, notFound } = require('./middleware/errorHandler');
-
-// Import routes
-const authRoutes = require('./routers/authRoutes');
-// const notesRoutes = require('./routers/notesRoutes'); // Commented out until notes functionality is implemented
-
-// Load environment variables
 dotenv.config();
 
-/**
- * Express App Configuration
- * Sets up middleware, routes, and error handling
- */
+const { errorHandler, notFound } = require('./middleware/errorHandler');
+const authRoutes = require('./routers/authRoutes');
+const userManagementRoutes = require('./routers/userManagementRoutes');
+const itemsRoutes = require('./routers/itemsRoutes');
+// const notesRoutes = require('./routers/notesRoutes');
+
 const app = express();
 
-// CORS Configuration
 const corsOptions = {
-  origin: process.env.NODE_ENV === 'production' 
-    ? ['https://yourdomain.com'] // Add your production domain
-    : ['http://localhost:3000', 'http://localhost:3001'], // Development origins
+  origin: process.env.NODE_ENV === 'production'
+    ? ['https://yourdomain.com']
+    : ['http://localhost:3000', 'http://localhost:3001'],
   credentials: true,
   optionsSuccessStatus: 200
 };
 
-// Middleware
 app.use(cors(corsOptions));
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
-// API Health Check
-app.get('/health', (req, res) => {
-  res.status(200).json({
-    success: true,
-    message: 'API is running successfully',
-    timestamp: new Date().toISOString(),
-    environment: process.env.NODE_ENV || 'development'
-  });
-});
+app.get('/health', (req, res) => res.json({ success: true, environment: process.env.NODE_ENV || 'development' }));
 
-// API Routes
 app.use('/api/auth', authRoutes);
-// app.use('/api/notes', notesRoutes); // Commented out until notes functionality is implemented
+app.use('/api/users', userManagementRoutes);
+app.use('/api/items', itemsRoutes);
 
-// API Documentation endpoint
 app.get('/api', (req, res) => {
   res.json({
     success: true,
-    message: 'Backend Authentication & Notes API',
     version: '1.0.0',
-    endpoints: {
-      auth: {
-        register: 'POST /api/auth/register',
-        login: 'POST /api/auth/login',
-        logout: 'POST /api/auth/logout',
-        profile: 'GET /api/auth/profile',
-        updateProfile: 'PUT /api/auth/profile',
-        verifyEmail: 'GET /api/auth/verify-email',
-        resendVerification: 'POST /api/auth/resend-verification'
-      }
-      // notes endpoints will be added when notes functionality is implemented
-    }
+    authEndpoints: [
+      'POST /api/auth/register',
+      'POST /api/auth/login',
+      'POST /api/auth/logout',
+      'GET /api/auth/profile',
+      'PUT /api/auth/profile',
+      'GET /api/auth/verify-email',
+      'POST /api/auth/resend-verification'
+    ],
+    userManagementEndpoints: [
+      'GET /api/users',
+      'GET /api/users/stats'
+    ],
+    itemsEndpoints: [
+      'POST /api/items',
+      'GET /api/items',
+      'GET /api/items/:id',
+      'PUT /api/items/:id',
+      'DELETE /api/items/:id',
+      'GET /api/items/my-items',
+      'GET /api/items/stats'
+    ]
   });
 });
 
-// 404 Handler - Must be after all routes
 app.use(notFound);
-
-// Error Handler - Must be last middleware
 app.use(errorHandler);
 
 module.exports = app;

@@ -3,12 +3,16 @@ const router = express.Router();
 const {
   register,
   login,
-  logout,
+  logout
+} = require('../controllers/authController');
+const {
   getProfile,
-  updateProfile,
+  updateProfile
+} = require('../controllers/profileController');
+const {
   verifyEmail,
   resendVerification
-} = require('../controllers/authController');
+} = require('../controllers/userVerificationController');
 const { authenticate } = require('../middleware/auth');
 
 /**

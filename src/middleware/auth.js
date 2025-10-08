@@ -57,6 +57,24 @@ const authenticate = async (req, res, next) => {
     req.user = user;
     next();
   } catch (error) {
+    // Try to find user and set as inactive if token is invalid/expired
+    try {
+      const authHeader = req.header('Authorization');
+      if (authHeader && authHeader.startsWith('Bearer ')) {
+        const token = authHeader.substring(7);
+        const decoded = jwt.decode(token); // Decode without verification to get userId
+        if (decoded && decoded.userId) {
+          const user = await User.findById(decoded.userId);
+          if (user && user.isActive) {
+            user.isActive = false;
+            await user.save();
+          }
+        }
+      }
+    } catch (updateError) {
+      // Silently handle any errors in updating user status
+    }
+
     if (error.name === 'JsonWebTokenError') {
       return res.status(401).json({
         success: false,

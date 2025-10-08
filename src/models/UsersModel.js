@@ -50,6 +50,12 @@ const userSchema = new mongoose.Schema({
     default: false                                   // New users start as unverified
   },
 
+  // Whether the user is currently active (has valid token)
+  isActive: {
+    type: Boolean,                                   // This must be true or false
+    default: false                                   // New users start as inactive until they login
+  },
+
   // The last time the user logged out (for tracking activity)
   last_activity: {
     type: Date,                                      // This will store the date and time
