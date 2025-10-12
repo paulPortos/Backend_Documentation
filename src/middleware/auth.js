@@ -3,8 +3,6 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/UsersModel');
 
 /**
-
-/**
  * JWT-BASED AUTHENTICATION MIDDLEWARE
  *
  * This checks if the user is logged in by looking for a JWT token in the Authorization header.
@@ -93,8 +91,6 @@ const authenticate = async (req, res, next) => {
     }
   }
 };
-
-/**
 
 /**
  * AUTHORIZATION MIDDLEWARE - Checks if the user has the right type (admin/rentor)

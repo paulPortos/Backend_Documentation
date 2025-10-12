@@ -7,6 +7,7 @@ dotenv.config();
 const { errorHandler, notFound } = require('./middleware/errorHandler');
 const authRoutes = require('./routers/authRoutes');
 const userManagementRoutes = require('./routers/userManagementRoutes');
+const adminRoutes = require('./routers/adminRoutes');
 const itemsRoutes = require('./routers/itemsRoutes');
 // const notesRoutes = require('./routers/notesRoutes');
 
@@ -29,6 +30,7 @@ app.get('/health', (req, res) => res.json({ success: true, environment: process.
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userManagementRoutes);
 app.use('/api/items', itemsRoutes);
+app.use('/api/admin', adminRoutes);
 
 app.get('/api', (req, res) => {
   res.json({
@@ -55,6 +57,11 @@ app.get('/api', (req, res) => {
       'DELETE /api/items/:id',
       'GET /api/items/my-items',
       'GET /api/items/stats'
+    ],
+    adminEndpoints: [
+      'GET /api/admin/users',
+      'GET /api/admin/users/:id',
+      'PATCH /api/admin/users/:id/verify-id'
     ]
   });
 });

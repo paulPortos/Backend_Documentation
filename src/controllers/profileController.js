@@ -45,10 +45,14 @@ const updateProfile = async (req, res) => {
         });
       }
     }
+    // Build an update object only with provided fields to avoid overwriting with undefined
+    const updateData = {};
+    if (typeof fullName !== 'undefined') updateData.fullName = fullName;
+    if (typeof email !== 'undefined') updateData.email = email;
 
     const updatedUser = await User.findByIdAndUpdate(
       userId,
-      { fullName, email },
+      updateData,
       { new: true, runValidators: true }
     );
 

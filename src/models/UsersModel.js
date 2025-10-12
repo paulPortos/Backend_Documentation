@@ -44,6 +44,27 @@ const userSchema = new mongoose.Schema({
     default: 'rentor'                                // If you don't specify, it defaults to 'rentor'
   },
 
+  // Government-issued ID number (e.g., passport, national ID)
+  valid_id: {
+    type: String,
+    required: [true, 'Valid ID is required'],
+    trim: true,
+    minlength: [3, 'Valid ID must be at least 3 characters']
+  },
+
+  // Whether the provided valid_id has been approved by an admin
+  is_id_verified: {
+    type: Boolean,
+    default: false
+  },
+
+  // Age of the user (must be 18 or older)
+  age: {
+    type: Number,
+    required: [true, 'Age is required'],
+    min: [18, 'You must be at least 18 years old']
+  },
+
   // Whether the user has verified their email address
   is_verified: {
     type: Boolean,                                   // This must be true or false

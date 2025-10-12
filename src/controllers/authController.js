@@ -18,10 +18,33 @@ const generateToken = (userId) => {
  * @desc    Register new user
  * @route   POST /api/auth/register
  * @access  Public
+ * @body    { fullName, email, password, userType, age, valid_id }
+ *          - age must be 18 or older
+ *          - valid_id is a government-issued ID string
  */
 const register = async (req, res) => {
   try {
-    const { fullName, email, password, userType } = req.body;
+    const { fullName, email, password, userType, age, valid_id } = req.body;
+
+    // Basic input validation for age and valid_id before hitting DB validations
+    if (typeof age === 'undefined' || Number.isNaN(Number(age))) {
+      return res.status(400).json({
+        success: false,
+        message: 'Age is required and must be a number'
+      });
+    }
+    if (Number(age) < 18) {
+      return res.status(400).json({
+        success: false,
+        message: 'You must be at least 18 years old to register'
+      });
+    }
+    if (!valid_id || String(valid_id).trim().length < 3) {
+      return res.status(400).json({
+        success: false,
+        message: 'A valid government-issued ID is required'
+      });
+    }
 
     // Check if user already exists
     const existingUser = await User.findOne({ email });
@@ -33,13 +56,16 @@ const register = async (req, res) => {
       });
     }
 
-    // Create user (starts as unverified)
+    // Create user
     const user = await User.create({
       fullName,
       email,
       password,
       userType,
-      is_verified: false
+      is_verified: false, // email verification status
+      valid_id: String(valid_id).trim(),
+      is_id_verified: false, // admin will set this to true after review
+      age: Number(age)
     });
 
     // Send verification email
@@ -56,7 +82,9 @@ const register = async (req, res) => {
             fullName: user.fullName,
             email: user.email,
             userType: user.userType,
-            is_verified: user.is_verified
+            age: user.age,
+            is_verified: user.is_verified,
+            is_id_verified: user.is_id_verified
           }
         }
       });
@@ -71,7 +99,9 @@ const register = async (req, res) => {
           fullName: user.fullName,
           email: user.email,
           userType: user.userType,
-          is_verified: user.is_verified
+          age: user.age,
+          is_verified: user.is_verified,
+          is_id_verified: user.is_id_verified
         }
       }
     });
@@ -129,6 +159,14 @@ const login = async (req, res) => {
       });
     }
 
+    // If email is verified but ID is not yet verified, block login with clear message
+    if (!user.is_id_verified) {
+      return res.status(403).json({
+        success: false,
+        message: 'Your account is pending ID verification. Please allow an administrator to review and approve your ID.'
+      });
+    }
+
     // Generate JWT token
     const token = generateToken(user._id);
 
@@ -147,6 +185,7 @@ const login = async (req, res) => {
           email: user.email,
           userType: user.userType,
           is_verified: user.is_verified,
+          is_id_verified: user.is_id_verified,
           isActive: user.isActive
         }
       }
