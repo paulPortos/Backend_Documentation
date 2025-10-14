@@ -1,3 +1,11 @@
+/**
+ * AUTHENTICATION LOGIC (Plain English)
+ *
+ * This file handles account actions:
+ * - register: creates a new account and emails a verification link
+ * - login: checks your details and gives you a temporary access pass (token)
+ * - logout: marks you as inactive
+ */
 const User = require('../models/UsersModel');
 const jwt = require('jsonwebtoken');
 const { sendVerificationEmail } = require('./userVerificationController');

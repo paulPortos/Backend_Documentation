@@ -1,3 +1,9 @@
+/**
+ * ITEMS FEATURES (Plain English)
+ *
+ * This file is about adding, viewing, updating, and removing items available for rent.
+ * Think of items as listings created by users. We also handle pictures and simple stats.
+ */
 const Item = require('../models/ItemsModel');
 const path = require('path');
 const fs = require('fs');

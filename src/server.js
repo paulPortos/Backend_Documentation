@@ -1,3 +1,11 @@
+/**
+ * START THE APP (Plain English)
+ *
+ * This file turns the app on:
+ * - connects to the database
+ * - starts listening for requests
+ * - handles shutdowns and unexpected errors in a friendly way
+ */
 const app = require('./app');
 const connectDB = require('./configs/database');
 

@@ -1,3 +1,9 @@
+/**
+ * USER MANAGEMENT (Plain English)
+ *
+ * These tools help an admin get a simple list of users and some quick stats
+ * like how many are active or verified. Think of it as an overview dashboard.
+ */
 const User = require('../models/UsersModel');
 
 /**

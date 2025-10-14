@@ -1,3 +1,9 @@
+/**
+ * DATABASE PLUG (Plain English)
+ *
+ * This function plugs the app into the database so we can store and read data.
+ * If the plug fails, we stop the app and show a helpful message.
+ */
 const mongoose = require('mongoose');
 
 /**

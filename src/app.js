@@ -1,3 +1,11 @@
+/**
+ * APPLICATION SETUP (Plain English)
+ *
+ * Think of this file as the front desk of a building. It welcomes visitors,
+ * directs them to the right departments (routes), and ensures everything
+ * runs smoothly. We also set up safety measures like error handling and
+ * which websites are allowed to talk to us (CORS).
+ */
 const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');

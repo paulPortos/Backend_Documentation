@@ -1,3 +1,10 @@
+/**
+ * EMAIL VERIFICATION (Plain English)
+ *
+ * This file sends a confirmation email when someone signs up and checks the link
+ * when they click it. If the link is valid and on time, their email gets marked
+ * as verified so they can continue.
+ */
 const User = require('../models/UsersModel');
 const jwt = require('jsonwebtoken');
 const nodemailer = require('nodemailer');

@@ -1,3 +1,10 @@
+/**
+ * PROFILE FEATURES (Plain English)
+ *
+ * This file lets a logged-in person view their own details and update basic info
+ * like their name or email. We make sure emails are unique and only change what
+ * the person actually sent.
+ */
 const User = require('../models/UsersModel');
 
 /**

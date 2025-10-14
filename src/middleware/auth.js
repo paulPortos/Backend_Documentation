@@ -1,4 +1,10 @@
-
+/**
+ * LOGIN AND PERMISSION CHECKS (Plain English)
+ *
+ * This file is the security guard for the building:
+ * - authenticate: checks if a visitor has a valid pass (token) and who they are
+ * - authorize: checks if the visitor has the right role to enter a specific area
+ */
 const jwt = require('jsonwebtoken');
 const User = require('../models/UsersModel');
 

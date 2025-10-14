@@ -1,3 +1,10 @@
+/**
+ * USER DATA BLUEPRINT (Plain English)
+ *
+ * This file defines what information we store for each user and how we protect it.
+ * Think of it as the standardized form every account must follow, including
+ * basic details, security, and verification fields.
+ */
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 

@@ -1,9 +1,12 @@
-const User = require('../models/UsersModel');
-
 /**
- * ADMIN CONTROLLER
- * Easy-to-understand endpoints for admins to manage users.
+ * ADMIN TOOLS (Plain English)
+ *
+ * This file gives administrators simple tools to:
+ * - see a list of users (optionally filter by who still needs verification)
+ * - look up details for one user
+ * - mark a user's ID as verified when their documents are approved
  */
+const User = require('../models/UsersModel');
 
 /**
  * @desc    List users with optional filters
