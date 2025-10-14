@@ -12,16 +12,32 @@ const {
  * Simple, clear endpoints for admin user management.
  */
 
-// List users with optional filters (unverified email, unverified ID)
-// GET /api/admin/users?unverifiedEmail=true&unverifiedId=true
+/**
+ * @route   GET /api/admin/users
+ * @desc    List users with optional filters
+ * @access  Private (Admin only)
+ * @headers Authorization: Bearer <token>
+ * @query   unverifiedEmail=true|false, unverifiedId=true|false
+ * @body    None
+ */
 router.get('/users', authenticate, authorize('admin'), listUsers);
 
-// Get specific user details by ID
-// GET /api/admin/users/:id
+/**
+ * @route   GET /api/admin/users/:id
+ * @desc    Get specific user details by ID
+ * @access  Private (Admin only)
+ * @headers Authorization: Bearer <token>
+ * @body    None
+ */
 router.get('/users/:id', authenticate, authorize('admin'), getUserById);
 
-// Mark a user's ID as verified (approved)
-// PATCH /api/admin/users/:id/verify-id
+/**
+ * @route   PATCH /api/admin/users/:id/verify-id
+ * @desc    Mark a user's ID as verified (approved)
+ * @access  Private (Admin only)
+ * @headers Authorization: Bearer <token>
+ * @body    None
+ */
 router.patch('/users/:id/verify-id', authenticate, authorize('admin'), verifyUserId);
 
 module.exports = router;

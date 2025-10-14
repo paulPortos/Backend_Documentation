@@ -59,6 +59,7 @@ const upload = multer({
  * @route   GET /api/items/stats
  * @desc    Get items statistics
  * @access  Private (Admin only)
+ * @body    None
  */
 router.get('/stats', authenticate, authorize('admin'), getItemsStats);
 
@@ -66,6 +67,8 @@ router.get('/stats', authenticate, authorize('admin'), getItemsStats);
  * @route   GET /api/items/my-items
  * @desc    Get current user's items
  * @access  Private
+ * @headers Authorization: Bearer <token>
+ * @body    None
  */
 router.get('/my-items', authenticate, getMyItems);
 
@@ -73,6 +76,7 @@ router.get('/my-items', authenticate, getMyItems);
  * @route   POST /api/items
  * @desc    Create new item
  * @access  Private
+ * @headers Authorization: Bearer <token>
  * @body    { item_name, description?, category, price, location }
  * @file    picture (required)
  */
@@ -83,6 +87,7 @@ router.post('/', authenticate, upload.single('picture'), createItem);
  * @desc    Get all items with filtering and pagination
  * @access  Public
  * @query   page, limit, category, location, minPrice, maxPrice, search, showDisabled
+ * @body    None
  */
 router.get('/', getAllItems);
 
@@ -90,6 +95,7 @@ router.get('/', getAllItems);
  * @route   GET /api/items/:id
  * @desc    Get single item by ID
  * @access  Public
+ * @body    None
  */
 router.get('/:id', getItemById);
 
@@ -97,6 +103,7 @@ router.get('/:id', getItemById);
  * @route   PUT /api/items/:id
  * @desc    Update item (all fields optional)
  * @access  Private (Owner or Admin)
+ * @headers Authorization: Bearer <token>
  * @body    { item_name?, description?, category?, price?, location?, disable? }
  * @file    picture? (optional)
  */
@@ -106,6 +113,8 @@ router.put('/:id', authenticate, upload.single('picture'), updateItem);
  * @route   DELETE /api/items/:id
  * @desc    Delete item
  * @access  Private (Owner or Admin)
+ * @headers Authorization: Bearer <token>
+ * @body    None
  */
 router.delete('/:id', authenticate, deleteItem);
 

@@ -24,7 +24,7 @@ const { authenticate } = require('../middleware/auth');
  * @route   POST /api/auth/register
  * @desc    Register a new user
  * @access  Public
- * @body    { fullName, email, password, userType }
+ * @body    { fullName, email, password, userType, age, valid_id }
  */
 router.post('/register', register); //localhost:8000/api/auth/register
 
@@ -41,6 +41,7 @@ router.post('/login', login);
  * @desc    Logout user (JWT-based)
  * @access  Private
  * @headers Authorization: Bearer <token>
+ * @body    None
  */
 router.post('/logout', authenticate, logout);
 
@@ -49,6 +50,7 @@ router.post('/logout', authenticate, logout);
  * @desc    Verify user email address
  * @access  Public
  * @query   token=<verification_token>
+ * @body    None
  */
 router.get('/verify-email', verifyEmail);
 
@@ -65,6 +67,7 @@ router.post('/resend-verification', resendVerification);
  * @desc    Get current user profile
  * @access  Private
  * @headers Authorization: Bearer <token>
+ * @body    None
  */
 router.get('/profile', authenticate, getProfile);
 
@@ -73,7 +76,7 @@ router.get('/profile', authenticate, getProfile);
  * @desc    Update user profile
  * @access  Private
  * @headers Authorization: Bearer <token>
- * @body    { fullName, email }
+ * @body    { fullName?, email? }
  */
 router.put('/profile', authenticate, updateProfile);
 
